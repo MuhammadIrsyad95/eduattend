@@ -52,12 +52,21 @@ export default function Sidebar() {
     <>
       {/* MOBILE TOPBAR */}
       <div className="fixed left-0 top-0 z-[60] flex h-[72px] w-full items-center justify-between border-b border-zinc-200 bg-white px-4 lg:hidden">
+        {/* LEFT */}
+        <button
+          onClick={() => setOpen(true)}
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-xl shadow-sm"
+        >
+          ☰
+        </button>
+
+        {/* RIGHT */}
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white">
             EA
           </div>
 
-          <div>
+          <div className="text-right">
             <h1 className="text-sm font-semibold text-zinc-900">
               EduAttend
             </h1>
@@ -67,13 +76,6 @@ export default function Sidebar() {
             </p>
           </div>
         </div>
-
-        <button
-          onClick={() => setOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-xl"
-        >
-          ☰
-        </button>
       </div>
 
       {/* OVERLAY */}
@@ -93,7 +95,7 @@ export default function Sidebar() {
         }`}
       >
         {/* LOGO */}
-        <div className="border-b border-zinc-100 px-6 py-5">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white">
               EA
@@ -109,6 +111,14 @@ export default function Sidebar() {
               </p>
             </div>
           </div>
+
+          {/* CLOSE MOBILE */}
+          <button
+            onClick={() => setOpen(false)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 lg:hidden"
+          >
+            ✕
+          </button>
         </div>
 
         {/* MENU */}
