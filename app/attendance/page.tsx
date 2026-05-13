@@ -1,43 +1,43 @@
 import MainLayout from '@/components/layout/MainLayout'
+import { db } from '@/db'
+import { attendance } from '@/db/schema'
+import { users } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
-const attendanceData = [
-  {
-    student: 'John Doe',
-    course: 'Advanced Programming',
-    checkIn: '08:12 AM',
-    status: 'Present',
-  },
+export default async function AttendancePage() {
+    const attendanceData = await db
+        .select({
+            id: attendance.id,
 
-  {
-    student: 'Sarah Johnson',
-    course: 'Database Systems',
-    checkIn: '08:31 AM',
-    status: 'Late',
-  },
+            userId: attendance.userId,
 
-  {
-    student: 'Michael Chen',
-    course: 'Computer Networks',
-    checkIn: '-',
-    status: 'Absent',
-  },
+            course: attendance.course,
 
-  {
-    student: 'Emily Carter',
-    course: 'Artificial Intelligence',
-    checkIn: '07:55 AM',
-    status: 'Present',
-  },
-]
+            status: attendance.status,
 
-export default function AttendancePage() {
+            checkIn: attendance.checkIn,
+
+            checkOut: attendance.checkOut,
+
+            date: attendance.date,
+
+            fullName: users.fullName,
+
+            email: users.email,
+        })
+        .from(attendance)
+        .leftJoin(
+            users,
+            eq(attendance.userId, users.id)
+        )
+
   return (
     <MainLayout>
       <div className="space-y-8">
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">
               Attendance
             </h1>
 
@@ -61,11 +61,11 @@ export default function AttendancePage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[30px] border border-zinc-200 bg-white p-6 shadow-sm">
             <p className="text-sm text-zinc-500">
-              Total Students
+              Total Records
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-zinc-900">
-              1,284
+              {attendanceData.length}
             </h2>
           </div>
 
@@ -75,7 +75,11 @@ export default function AttendancePage() {
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-emerald-600">
-              1,142
+              {
+                attendanceData.filter(
+                  (item) => item.status === 'Present'
+                ).length
+              }
             </h2>
           </div>
 
@@ -85,7 +89,11 @@ export default function AttendancePage() {
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-yellow-500">
-              64
+              {
+                attendanceData.filter(
+                  (item) => item.status === 'Late'
+                ).length
+              }
             </h2>
           </div>
 
@@ -95,7 +103,11 @@ export default function AttendancePage() {
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-red-500">
-              78
+              {
+                attendanceData.filter(
+                  (item) => item.status === 'Absent'
+                ).length
+              }
             </h2>
           </div>
         </div>
@@ -130,11 +142,11 @@ export default function AttendancePage() {
 
               <div className="rounded-2xl bg-white/15 p-5 backdrop-blur-xl">
                 <p className="text-sm text-white/70">
-                  Students
+                  Records
                 </p>
 
                 <h3 className="mt-2 text-3xl font-black">
-                  42
+                  {attendanceData.length}
                 </h3>
               </div>
             </div>
@@ -181,6 +193,10 @@ export default function AttendancePage() {
                     Status
                   </th>
 
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    Date
+                  </th>
+
                   <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">
                     Action
                   </th>
@@ -188,9 +204,9 @@ export default function AttendancePage() {
               </thead>
 
               <tbody>
-                {attendanceData.map((item, index) => (
+                {attendanceData.map((item) => (
                   <tr
-                    key={index}
+                    key={item.id}
                     className="border-b border-zinc-100 transition hover:bg-zinc-50/70"
                   >
                     {/* STUDENT */}
@@ -200,11 +216,11 @@ export default function AttendancePage() {
 
                         <div>
                           <p className="text-sm font-semibold text-zinc-900">
-                            {item.student}
+                           {item.fullName}
                           </p>
 
                           <p className="mt-1 text-xs text-zinc-500">
-                            Academic User
+                        {item.email}
                           </p>
                         </div>
                       </div>
@@ -217,7 +233,7 @@ export default function AttendancePage() {
 
                     {/* CHECKIN */}
                     <td className="px-6 py-5 text-sm text-zinc-500">
-                      {item.checkIn}
+                      {item.checkIn || '-'}
                     </td>
 
                     {/* STATUS */}
@@ -233,6 +249,11 @@ export default function AttendancePage() {
                       >
                         {item.status}
                       </div>
+                    </td>
+
+                    {/* DATE */}
+                    <td className="px-6 py-5 text-sm text-zinc-500">
+                      {item.date}
                     </td>
 
                     {/* ACTION */}
