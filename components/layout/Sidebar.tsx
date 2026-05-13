@@ -20,6 +20,14 @@ const menus = [
     label: 'Users',
     href: '/users',
   },
+  {
+  label: 'Courses',
+  href: '/courses',
+},
+{
+  label: 'Schedule',
+  href: '/schedule',
+},
 ]
 
 export default function Sidebar() {
