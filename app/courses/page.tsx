@@ -1,42 +1,19 @@
 import MainLayout from '@/components/layout/MainLayout'
+import { db } from '@/db'
+import { courses } from '@/db/schema'
 
-const courses = [
-  {
-    code: 'CS101',
-    title: 'Advanced Programming',
-    lecturer: 'Dr. Sarah Johnson',
-    students: 42,
-    schedule: 'Mon & Wed • 08:00 AM',
-    status: 'Active',
-  },
+export default async function CoursesPage() {
+  const coursesData = await db
+    .select()
+    .from(courses)
 
-  {
-    code: 'CS205',
-    title: 'Database Systems',
-    lecturer: 'Michael Chen',
-    students: 36,
-    schedule: 'Tue & Thu • 10:00 AM',
-    status: 'Active',
-  },
-
-  {
-    code: 'CS310',
-    title: 'Computer Networks',
-    lecturer: 'Emily Carter',
-    students: 28,
-    schedule: 'Friday • 01:00 PM',
-    status: 'Upcoming',
-  },
-]
-
-export default function CoursesPage() {
   return (
     <MainLayout>
       <div className="space-y-8">
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">
               Courses
             </h1>
 
@@ -51,14 +28,14 @@ export default function CoursesPage() {
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
             <p className="text-sm text-zinc-500">
               Total Courses
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-zinc-900">
-              24
+              {coursesData.length}
             </h2>
           </div>
 
@@ -68,17 +45,21 @@ export default function CoursesPage() {
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-violet-600">
-              18
+              {coursesData.length}
             </h2>
           </div>
 
           <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
             <p className="text-sm text-zinc-500">
-              Total Students
+              Total Credits
             </p>
 
             <h2 className="mt-4 text-5xl font-black tracking-tight text-emerald-600">
-              1,284
+              {coursesData.reduce(
+                (acc, item) =>
+                  acc + Number(item.credits),
+                0
+              )}
             </h2>
           </div>
         </div>
@@ -116,11 +97,11 @@ export default function CoursesPage() {
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                    Students
+                    Room
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                    Schedule
+                    Credits
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
@@ -134,20 +115,20 @@ export default function CoursesPage() {
               </thead>
 
               <tbody>
-                {courses.map((course, index) => (
+                {coursesData.map((course) => (
                   <tr
-                    key={index}
+                    key={course.id}
                     className="border-b border-zinc-100 transition hover:bg-zinc-50/70"
                   >
                     {/* COURSE */}
                     <td className="px-6 py-5">
                       <div>
                         <p className="text-sm font-semibold text-zinc-900">
-                          {course.title}
+                          {course.courseName}
                         </p>
 
                         <p className="mt-1 text-xs text-zinc-500">
-                          {course.code}
+                          {course.id}
                         </p>
                       </div>
                     </td>
@@ -157,28 +138,22 @@ export default function CoursesPage() {
                       {course.lecturer}
                     </td>
 
-                    {/* STUDENTS */}
+                    {/* ROOM */}
                     <td className="px-6 py-5">
                       <div className="inline-flex rounded-xl bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-                        {course.students} Students
+                        {course.room}
                       </div>
                     </td>
 
-                    {/* SCHEDULE */}
+                    {/* CREDITS */}
                     <td className="px-6 py-5 text-sm text-zinc-500">
-                      {course.schedule}
+                      {course.credits} Credits
                     </td>
 
                     {/* STATUS */}
                     <td className="px-6 py-5">
-                      <div
-                        className={`inline-flex rounded-xl px-3 py-1 text-xs font-medium ${
-                          course.status === 'Active'
-                            ? 'bg-emerald-50 text-emerald-600'
-                            : 'bg-yellow-50 text-yellow-600'
-                        }`}
-                      >
-                        {course.status}
+                      <div className="inline-flex rounded-xl bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
+                        Active
                       </div>
                     </td>
 

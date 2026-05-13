@@ -39,3 +39,19 @@ export const attendance = pgTable('attendance', {
     .defaultNow()
     .notNull(),
 })
+
+export const courses = pgTable('courses', {
+  id: text('id').primaryKey(),
+
+  courseName: text('course_name').notNull(),
+
+  lecturer: text('lecturer').notNull(),
+
+  room: text('room').notNull(),
+
+  credits: text('credits').notNull(),
+
+  createdAt: timestamp('created_at')
+    .defaultNow()
+    .notNull(),
+})
