@@ -11,10 +11,10 @@ export default function MainLayout({
     <div className="min-h-screen bg-[#f8fafc]">
       <Sidebar />
 
-      <main className="ml-[260px]">
+      <main className="min-h-screen lg:ml-[260px]">
         <Header />
 
-        <div className="p-8">
+        <div className="p-4 md:p-6 xl:p-8">
           {children}
         </div>
       </main>
